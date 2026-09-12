@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
+import QRCode from "qrcode";
+import { getSiteUrl } from "@/lib/site-url";
 import ProfileEditor from "./ProfileEditor";
 
 export default async function DashboardPage({ searchParams }) {
@@ -20,6 +22,12 @@ export default async function DashboardPage({ searchParams }) {
     .eq("id", user.id)
     .single();
 
+  const siteUrl = await getSiteUrl();
+  const publicUrl = profile?.username ? `${siteUrl}/u/${profile.username}` : null;
+  const qrDataUrl = publicUrl
+    ? await QRCode.toDataURL(publicUrl, { width: 240, margin: 1 })
+    : null;
+
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10">
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow p-8">
@@ -34,11 +42,13 @@ export default async function DashboardPage({ searchParams }) {
           </form>
         </div>
 
-        {profile?.username && (
-          <p className="mb-6 text-sm text-gray-500">
-            Tu link publico:{" "}
-            <span className="font-mono">/u/{profile.username}</span>
-          </p>
+        {qrDataUrl && (
+          <div className="mb-6 flex flex-col items-center gap-2 border border-gray-200 rounded-xl p-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={qrDataUrl} alt="Codigo QR de tu tarjeta" className="w-40 h-40" />
+            <a href={publicUrl} target="_blank" rel="noreferrer" className="text-xs text-gray-500 underline break-all">{publicUrl}</a>
+            <a href={qrDataUrl} download="tinkuy-qr.png" className="text-xs font-medium text-blue-600 underline">Descargar QR</a>
+          </div>
         )}
 
         {params?.success && (
