@@ -56,6 +56,7 @@ export default async function PublicCardPage({ params, searchParams }) {
           <h1 className="text-xl font-bold mt-3">{profile.full_name || profile.username}</h1>
           {profile.profession && <p className="text-gray-600 mt-1">{profile.profession}</p>}
           {profile.position_company && <p className="text-gray-500 text-sm">{profile.position_company}</p>}
+          {profile.bio && <p className="text-gray-600 text-sm mt-3">{profile.bio}</p>}
 
           <div className="mt-6 space-y-2">
             <a href={`/api/vcard/${profile.username}`} className="block w-full bg-gradient-to-r from-indigo-600 to-fuchsia-500 text-white rounded-lg py-2.5 font-medium hover:opacity-90 transition">Guardar contacto</a>
