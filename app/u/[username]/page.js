@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
-import { getPhoneFlag } from "@/lib/phone-flag";
+import { getPhoneCountryIso } from "@/lib/phone-flag";
 
 const SOCIALS = [
   { key: "instagram_url", label: "Instagram", color: "bg-pink-500" },
@@ -36,6 +36,7 @@ export default async function PublicCardPage({ params, searchParams }) {
   }
 
   const whatsappLink = profile.whatsapp_phone ? `https://wa.me/${profile.whatsapp_phone.replace(/\D/g, "")}` : null;
+  const phoneIso = getPhoneCountryIso(profile.phone);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-white px-4 py-10 flex justify-center">
@@ -64,7 +65,7 @@ export default async function PublicCardPage({ params, searchParams }) {
             )}
 
             {profile.phone && (
-              <a href={`tel:${profile.phone}`} className="flex items-center justify-center gap-2 w-full border border-indigo-200 text-indigo-700 rounded-lg py-2.5 font-medium hover:bg-indigo-50 transition"><span>{getPhoneFlag(profile.phone)}</span><span>📞 Llamar: {profile.phone}</span></a>
+              <a href={`tel:${profile.phone}`} className="flex items-center justify-center gap-2 w-full border border-indigo-200 text-indigo-700 rounded-lg py-2.5 font-medium hover:bg-indigo-50 transition">{phoneIso && <img src={`https://flagcdn.com/24x18/${phoneIso}.png`} alt={phoneIso} className="w-6 h-[18px] rounded-sm" />}<span>📞 Llamar: {profile.phone}</span></a>
             )}
 
             {profile.email && (
