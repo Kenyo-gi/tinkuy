@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
+import { getPhoneFlag } from "@/lib/phone-flag";
 
 const SOCIALS = [
   { key: "instagram_url", label: "Instagram", color: "bg-pink-500" },
@@ -63,15 +64,15 @@ export default async function PublicCardPage({ params, searchParams }) {
             )}
 
             {profile.phone && (
-              <a href={`tel:${profile.phone}`} className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Llamar: {profile.phone}</a>
+              <a href={`tel:${profile.phone}`} className="flex items-center justify-center gap-2 w-full border border-indigo-200 text-indigo-700 rounded-lg py-2.5 font-medium hover:bg-indigo-50 transition"><span>{getPhoneFlag(profile.phone)}</span><span>📞 Llamar: {profile.phone}</span></a>
             )}
 
             {profile.email && (
-              <a href={`mailto:${profile.email}`} className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Enviar email</a>
+              <a href={`mailto:${profile.email}`} className="flex items-center justify-center gap-2 w-full border border-blue-200 text-blue-700 rounded-lg py-2.5 font-medium hover:bg-blue-50 transition"><span>✉️</span><span>Enviar email</span></a>
             )}
 
             {profile.resume_url && (
-              <a href={profile.resume_url} target="_blank" rel="noreferrer" className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Ver curriculum</a>
+              <a href={profile.resume_url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full border border-emerald-200 text-emerald-700 rounded-lg py-2.5 font-medium hover:bg-emerald-50 transition"><span>📄</span><span>Ver curriculum</span></a>
             )}
           </div>
 
@@ -85,8 +86,8 @@ export default async function PublicCardPage({ params, searchParams }) {
 
           <div className="mt-8 pt-4 border-t border-gray-100">
             <a href="/" className="text-xs text-gray-400 hover:text-gray-600 transition">
-              Hecho con{" "}
-              <span className="font-bold bg-gradient-to-r from-indigo-600 to-fuchsia-500 bg-clip-text text-transparent">TINKUY</span>
+              Hecho por{" "}
+              <span className="font-bold bg-gradient-to-r from-indigo-600 to-fuchsia-500 bg-clip-text text-transparent">TINKUY APP</span>
             </a>
           </div>
         </div>
