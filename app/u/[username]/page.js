@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 
 const SOCIALS = [
   { key: "instagram_url", label: "Instagram", color: "bg-pink-500" },
@@ -9,14 +10,28 @@ const SOCIALS = [
   { key: "linkedin_url", label: "LinkedIn", color: "bg-sky-700" },
 ];
 
-export default async function PublicCardPage({ params }) {
+export default async function PublicCardPage({ params, searchParams }) {
   const { username } = await params;
+  const sp = await searchParams;
+  const source = sp?.src === "qr" ? "qr" : "link";
   const supabase = await createClient();
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("username", username).single();
 
   if (!profile) {
     notFound();
+  }
+
+  try {
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || null;
+    await supabase.from("scan_events").insert({
+      profile_id: profile.id,
+      source,
+      user_agent: userAgent,
+    });
+  } catch {
+    // no bloquear la carga de la tarjeta si falla el registro del escaneo
   }
 
   const whatsappLink = profile.whatsapp_phone ? `https://wa.me/${profile.whatsapp_phone.replace(/\D/g, "")}` : null;
