@@ -24,9 +24,22 @@ export default async function DashboardPage({ searchParams }) {
 
   const siteUrl = await getSiteUrl();
   const publicUrl = profile?.username ? `${siteUrl}/u/${profile.username}` : null;
-  const qrDataUrl = publicUrl
-    ? await QRCode.toDataURL(publicUrl, { width: 240, margin: 1 })
+  const qrTargetUrl = publicUrl ? `${publicUrl}?src=qr` : null;
+  const qrDataUrl = qrTargetUrl
+    ? await QRCode.toDataURL(qrTargetUrl, { width: 240, margin: 1 })
     : null;
+
+  const { count: totalScans } = await supabase
+    .from("scan_events")
+    .select("*", { count: "exact", head: true })
+    .eq("profile_id", user.id);
+
+  const { data: recentScans } = await supabase
+    .from("scan_events")
+    .select("scanned_at, source")
+    .eq("profile_id", user.id)
+    .order("scanned_at", { ascending: false })
+    .limit(5);
 
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10">
@@ -50,6 +63,21 @@ export default async function DashboardPage({ searchParams }) {
             <a href={qrDataUrl} download="tinkuy-qr.png" className="text-xs font-medium text-blue-600 underline">Descargar QR</a>
           </div>
         )}
+
+        <div className="mb-6 border border-gray-200 rounded-xl p-4">
+          <h2 className="text-sm font-semibold text-gray-800 mb-2">Estadisticas</h2>
+          <p className="text-2xl font-bold">{totalScans ?? 0}</p>
+          <p className="text-xs text-gray-500 mb-3">Visitas totales a tu tarjeta</p>
+          {recentScans && recentScans.length > 0 ? (
+            <ul className="text-xs text-gray-600 space-y-1">
+              {recentScans.map((scan, i) => (
+                <li key={i}>{new Date(scan.scanned_at).toLocaleString("es-ES")} - {scan.source === "qr" ? "QR" : "Link"}</li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-xs text-gray-400">Todavia no hay visitas registradas.</p>
+          )}
+        </div>
 
         {params?.success && (
           <p className="mb-4 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
