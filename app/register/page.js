@@ -31,13 +31,13 @@ export default async function RegisterPage({ searchParams }) {
               name="username"
               type="text"
               placeholder="juanperez"
-              pattern="[a-z0-9_-]{3,30}"
-              title="3-30 caracteres: minusculas, numeros, - o _"
+              pattern="[A-Za-z0-9_-]{3,30}"
+              title="3-30 caracteres: letras, numeros, - o _"
               required
               className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
             />
             <p className="text-xs text-gray-400 mt-1">
-              Sera tu link publico: tinkuy.app/u/tu-usuario
+              Se guardara en minusculas. Sera tu link publico: tinkuy.app/u/tu-usuario
             </p>
           </div>
           <div>
