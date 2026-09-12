@@ -103,6 +103,7 @@ export default function ProfileEditor({ profile, userId }) {
       <input type="hidden" name="avatar_url" value={avatarUrl} />
       <input type="hidden" name="resume_url" value={resumeUrl} />
 
+      {/* Foto */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Foto de perfil
@@ -136,6 +137,7 @@ export default function ProfileEditor({ profile, userId }) {
         </div>
       </div>
 
+      {/* Datos personales */}
       <div className="grid gap-4 sm:grid-cols-2">
         <Field
           label="Nombres"
@@ -169,6 +171,7 @@ export default function ProfileEditor({ profile, userId }) {
         />
       </div>
 
+      {/* Curriculum */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Curriculum profesional (PDF)
@@ -183,12 +186,18 @@ export default function ProfileEditor({ profile, userId }) {
           <p className="text-xs text-gray-500 mt-1">Subiendo PDF...</p>
         )}
         {resumeUrl && (
-          <a href={resumeUrl} target="_blank" rel="noreferrer" className="block mt-1 text-xs text-blue-600 underline">
+          
+            href={resumeUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="block mt-1 text-xs text-blue-600 underline"
+          >
             Ver curriculum actual
           </a>
         )}
       </div>
 
+      {/* Redes sociales */}
       <div>
         <h2 className="text-sm font-semibold text-gray-800 mb-3">
           Redes sociales
@@ -236,7 +245,7 @@ export default function ProfileEditor({ profile, userId }) {
       <button
         type="submit"
         disabled={uploadingAvatar || uploadingResume}
-        className="bg-black text-white rounded-lg px-5 py-2 font-medium hover:bg-gray-800 transition disabled:opacity-50"
+        className="bg-gradient-to-r from-indigo-600 to-fuchsia-500 text-white rounded-lg px-5 py-2 font-medium hover:opacity-90 transition disabled:opacity-50"
       >
         Guardar cambios
       </button>
