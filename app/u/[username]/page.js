@@ -37,47 +37,58 @@ export default async function PublicCardPage({ params, searchParams }) {
   const whatsappLink = profile.whatsapp_phone ? `https://wa.me/${profile.whatsapp_phone.replace(/\D/g, "")}` : null;
 
   return (
-    <main className="min-h-screen bg-gray-50 px-4 py-10 flex justify-center">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow p-6 text-center">
-        <div className="w-24 h-24 mx-auto rounded-full bg-gray-100 overflow-hidden border border-gray-200 mb-4">
-          {profile.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.avatar_url} alt={profile.full_name || profile.username} className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin foto</div>
-          )}
-        </div>
+    <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-white px-4 py-10 flex justify-center">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden text-center">
+        <div className="h-20 bg-gradient-to-r from-indigo-600 to-fuchsia-500" />
 
-        <h1 className="text-xl font-bold">{profile.full_name || profile.username}</h1>
-        {profile.profession && <p className="text-gray-600 mt-1">{profile.profession}</p>}
-        {profile.position_company && <p className="text-gray-500 text-sm">{profile.position_company}</p>}
+        <div className="px-6 pb-6">
+          <div className="w-24 h-24 mx-auto -mt-12 rounded-full bg-gray-100 overflow-hidden border-4 border-white shadow-md">
+            {profile.avatar_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={profile.avatar_url} alt={profile.full_name || profile.username} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">Sin foto</div>
+            )}
+          </div>
 
-        <div className="mt-6 space-y-2">
-          <a href={`/api/vcard/${profile.username}`} className="block w-full bg-black text-white rounded-lg py-2.5 font-medium hover:bg-gray-800 transition">Guardar contacto</a>
+          <h1 className="text-xl font-bold mt-3">{profile.full_name || profile.username}</h1>
+          {profile.profession && <p className="text-gray-600 mt-1">{profile.profession}</p>}
+          {profile.position_company && <p className="text-gray-500 text-sm">{profile.position_company}</p>}
 
-          {whatsappLink && (
-            <a href={whatsappLink} target="_blank" rel="noreferrer" className="block w-full bg-green-500 text-white rounded-lg py-2.5 font-medium hover:bg-green-600 transition">WhatsApp</a>
-          )}
+          <div className="mt-6 space-y-2">
+            <a href={`/api/vcard/${profile.username}`} className="block w-full bg-gradient-to-r from-indigo-600 to-fuchsia-500 text-white rounded-lg py-2.5 font-medium hover:opacity-90 transition">Guardar contacto</a>
 
-          {profile.phone && (
-            <a href={`tel:${profile.phone}`} className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Llamar: {profile.phone}</a>
-          )}
+            {whatsappLink && (
+              <a href={whatsappLink} target="_blank" rel="noreferrer" className="block w-full bg-green-500 text-white rounded-lg py-2.5 font-medium hover:bg-green-600 transition">WhatsApp</a>
+            )}
 
-          {profile.email && (
-            <a href={`mailto:${profile.email}`} className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Enviar email</a>
-          )}
+            {profile.phone && (
+              <a href={`tel:${profile.phone}`} className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Llamar: {profile.phone}</a>
+            )}
 
-          {profile.resume_url && (
-            <a href={profile.resume_url} target="_blank" rel="noreferrer" className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Ver curriculum</a>
-          )}
-        </div>
+            {profile.email && (
+              <a href={`mailto:${profile.email}`} className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Enviar email</a>
+            )}
 
-        <div className="mt-6 flex justify-center gap-2 flex-wrap">
-          {SOCIALS.map(({ key, label, color }) =>
-            profile[key] ? (
-              <a key={key} href={profile[key]} target="_blank" rel="noreferrer" className={`${color} text-white text-xs font-medium rounded-full px-4 py-2 hover:opacity-90 transition`}>{label}</a>
-            ) : null
-          )}
+            {profile.resume_url && (
+              <a href={profile.resume_url} target="_blank" rel="noreferrer" className="block w-full border border-gray-300 rounded-lg py-2.5 font-medium hover:bg-gray-50 transition">Ver curriculum</a>
+            )}
+          </div>
+
+          <div className="mt-6 flex justify-center gap-2 flex-wrap">
+            {SOCIALS.map(({ key, label, color }) =>
+              profile[key] ? (
+                <a key={key} href={profile[key]} target="_blank" rel="noreferrer" className={`${color} text-white text-xs font-medium rounded-full px-4 py-2 hover:opacity-90 transition`}>{label}</a>
+              ) : null
+            )}
+          </div>
+
+          <div className="mt-8 pt-4 border-t border-gray-100">
+            <a href="/" className="text-xs text-gray-400 hover:text-gray-600 transition">
+              Hecho con{" "}
+              <span className="font-bold bg-gradient-to-r from-indigo-600 to-fuchsia-500 bg-clip-text text-transparent">TINKUY</span>
+            </a>
+          </div>
         </div>
       </div>
     </main>
