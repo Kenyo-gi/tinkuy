@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "@/lib/actions/auth";
 import { redirect } from "next/navigation";
+import ProfileEditor from "./ProfileEditor";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }) {
+  const params = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
@@ -31,17 +33,26 @@ export default async function DashboardPage() {
             </button>
           </form>
         </div>
-        <p className="text-gray-600">
-          Tu cuenta ya esta creada. El editor de tu tarjeta digital (foto,
-          profesion, redes sociales, etc.) lo construimos en el siguiente
-          paso.
-        </p>
+
         {profile?.username && (
-          <p className="mt-4 text-sm text-gray-500">
-            Tu link publico (todavia vacio):{" "}
+          <p className="mb-6 text-sm text-gray-500">
+            Tu link publico:{" "}
             <span className="font-mono">/u/{profile.username}</span>
           </p>
         )}
+
+        {params?.success && (
+          <p className="mb-4 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            Cambios guardados correctamente.
+          </p>
+        )}
+        {params?.error && (
+          <p className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            {params.error}
+          </p>
+        )}
+
+        <ProfileEditor profile={profile} userId={user.id} />
       </div>
     </main>
   );
