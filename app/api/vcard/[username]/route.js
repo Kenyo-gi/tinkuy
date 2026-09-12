@@ -25,6 +25,7 @@ export async function GET(request, { params }) {
     profile.profession ? `TITLE:${profile.profession}` : null,
     profile.phone ? `TEL;TYPE=CELL:${profile.phone}` : null,
     profile.email ? `EMAIL:${profile.email}` : null,
+    profile.bio ? `NOTE:${profile.bio}` : null,
     "END:VCARD",
   ].filter(Boolean);
 
