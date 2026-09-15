@@ -252,7 +252,7 @@ export default function ProfileEditor({ profile, userId }) {
         </p>
       )}
 
-      <button type="submit" disabled={uploadingAvatar || uploadingResume} className="bg-gradient-to-r from-indigo-600 to-fuchsia-500 text-white rounded-lg px-5 py-2 font-medium hover:opacity-90 transition disabled:opacity-50">Guardar cambios</button>
+      <button type="submit" disabled={uploadingAvatar || uploadingResume} className="bg-blue-600 text-white rounded-lg px-5 py-2 font-semibold hover:bg-blue-700 transition disabled:opacity-50">Guardar cambios</button>
     </form>
   );
 }
