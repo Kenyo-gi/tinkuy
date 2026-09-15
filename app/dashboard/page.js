@@ -47,6 +47,9 @@ export default async function DashboardPage({ searchParams }) {
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
         <div className="flex items-center justify-between mb-4">
           <Logo size="sm" />
+          {profile?.is_admin && (
+            <a href="/admin/testimonios" className="text-xs font-medium text-blue-600 underline">Moderar comentarios</a>
+          )}
         </div>
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-xl font-bold text-zinc-900">
