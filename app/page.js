@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Logo from "@/components/Logo";
+import { createClient } from "@/lib/supabase/server";
 
 const FEATURES = [
   { title: "Un solo link para todo", text: "Tus datos, telefono, WhatsApp, CV y redes sociales en una sola tarjeta digital." },
@@ -14,13 +15,17 @@ const STEPS = [
   { n: "3", title: "La compartes", text: "Con tu link o tu QR descargable, donde quieras." },
 ];
 
-const TESTIMONIALS = [
-  { quote: "Aqui puedes agregar el comentario real de uno de tus primeros usuarios.", name: "Espacio disponible" },
-  { quote: "Aqui puedes agregar el comentario real de otro usuario que probo tu tarjeta.", name: "Espacio disponible" },
-];
-
-export default function Home() {
+export default async function Home() {
   const year = new Date().getFullYear();
+  const supabase = await createClient();
+  const { data: testimonials } = await supabase
+    .from("testimonials")
+    .select("name, quote")
+    .eq("approved", true)
+    .order("created_at", { ascending: false })
+    .limit(4);
+
+  const hasTestimonials = testimonials && testimonials.length > 0;
 
   return (
     <main className="min-h-screen bg-white">
@@ -75,14 +80,30 @@ export default function Home() {
       </section>
 
       <section className="px-4 py-16 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold text-center mb-10 text-zinc-900">Lo que dicen los primeros usuarios</h2>
+        <h2 className="text-2xl font-bold text-center mb-2 text-zinc-900">Lo que dicen los primeros usuarios</h2>
+        <p className="text-zinc-500 text-center max-w-lg mx-auto mb-10">
+          <Link href="/opinion" className="text-blue-600 font-medium hover:underline">Danos tu opinion</Link> si ya probaste tu tarjeta.
+        </p>
         <div className="grid sm:grid-cols-2 gap-6">
-          {TESTIMONIALS.map((t, i) => (
-            <div key={i} className="border border-zinc-100 rounded-2xl p-6 shadow-sm">
-              <p className="text-zinc-600 italic mb-3">"{t.quote}"</p>
-              <p className="text-sm font-medium text-zinc-400">{t.name}</p>
-            </div>
-          ))}
+          {hasTestimonials ? (
+            testimonials.map((t, i) => (
+              <div key={i} className="border border-zinc-100 rounded-2xl p-6 shadow-sm">
+                <p className="text-zinc-600 italic mb-3">"{t.quote}"</p>
+                <p className="text-sm font-medium text-zinc-400">{t.name}</p>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className="border border-zinc-100 rounded-2xl p-6 shadow-sm">
+                <p className="text-zinc-400 italic mb-3">Se el primero en dejar tu opinion sobre TINKUY.</p>
+                <Link href="/opinion" className="text-sm font-medium text-blue-600 hover:underline">Escribir un comentario</Link>
+              </div>
+              <div className="border border-zinc-100 rounded-2xl p-6 shadow-sm">
+                <p className="text-zinc-400 italic mb-3">Espacio disponible para el proximo comentario.</p>
+                <Link href="/opinion" className="text-sm font-medium text-blue-600 hover:underline">Escribir un comentario</Link>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -99,6 +120,7 @@ export default function Home() {
           </div>
           <nav className="flex gap-4 text-sm text-zinc-500">
             <Link href="/" className="hover:text-zinc-900 transition">Inicio</Link>
+            <Link href="/opinion" className="hover:text-zinc-900 transition">Danos tu opinion</Link>
             <Link href="/register" className="hover:text-zinc-900 transition">Crear cuenta</Link>
             <Link href="/login" className="hover:text-zinc-900 transition">Ingresar</Link>
           </nav>
