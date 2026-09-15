@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import QRCode from "qrcode";
 import { getSiteUrl } from "@/lib/site-url";
 import ProfileEditor from "./ProfileEditor";
+import Logo from "@/components/Logo";
 
 export default async function DashboardPage({ searchParams }) {
   const params = await searchParams;
@@ -42,43 +43,43 @@ export default async function DashboardPage({ searchParams }) {
     .limit(5);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-indigo-50 via-gray-50 to-gray-50 px-4 py-10">
+    <main className="min-h-screen bg-zinc-50 px-4 py-10">
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-xs font-bold tracking-wide bg-gradient-to-r from-indigo-600 to-fuchsia-500 bg-clip-text text-transparent">TINKUY</span>
+        <div className="flex items-center justify-between mb-4">
+          <Logo size="sm" />
         </div>
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-xl font-bold">
+          <h1 className="text-xl font-bold text-zinc-900">
             Hola, {profile?.username ?? user.email}
           </h1>
           <form action={logout}>
-            <button className="text-sm text-gray-500 underline">
+            <button className="text-sm text-zinc-500 underline">
               Cerrar sesion
             </button>
           </form>
         </div>
 
         {qrDataUrl && (
-          <div className="mb-6 flex flex-col items-center gap-2 border border-gray-200 rounded-xl p-4">
+          <div className="mb-6 flex flex-col items-center gap-2 border border-zinc-200 rounded-xl p-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={qrDataUrl} alt="Codigo QR de tu tarjeta" className="w-40 h-40" />
-            <a href={publicUrl} target="_blank" rel="noreferrer" className="text-xs text-gray-500 underline break-all">{publicUrl}</a>
+            <a href={publicUrl} target="_blank" rel="noreferrer" className="text-xs text-zinc-500 underline break-all">{publicUrl}</a>
             <a href={qrDataUrl} download="tinkuy-qr.png" className="text-xs font-medium text-blue-600 underline">Descargar QR</a>
           </div>
         )}
 
-        <div className="mb-6 border border-gray-200 rounded-xl p-4">
-          <h2 className="text-sm font-semibold text-gray-800 mb-2">Estadisticas</h2>
-          <p className="text-2xl font-bold">{totalScans ?? 0}</p>
-          <p className="text-xs text-gray-500 mb-3">Visitas totales a tu tarjeta</p>
+        <div className="mb-6 border border-zinc-200 rounded-xl p-4">
+          <h2 className="text-sm font-semibold text-zinc-800 mb-2">Estadisticas</h2>
+          <p className="text-2xl font-bold text-zinc-900">{totalScans ?? 0}</p>
+          <p className="text-xs text-zinc-500 mb-3">Visitas totales a tu tarjeta</p>
           {recentScans && recentScans.length > 0 ? (
-            <ul className="text-xs text-gray-600 space-y-1">
+            <ul className="text-xs text-zinc-600 space-y-1">
               {recentScans.map((scan, i) => (
                 <li key={i}>{new Date(scan.scanned_at).toLocaleString("es-ES")} - {scan.source === "qr" ? "QR" : "Link"}</li>
               ))}
             </ul>
           ) : (
-            <p className="text-xs text-gray-400">Todavia no hay visitas registradas.</p>
+            <p className="text-xs text-zinc-400">Todavia no hay visitas registradas.</p>
           )}
         </div>
 
