@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import QRCode from "qrcode";
 import { getSiteUrl } from "@/lib/site-url";
 import ProfileEditor from "./ProfileEditor";
+import DocumentsEditor from "./DocumentsEditor";
 import Logo from "@/components/Logo";
 
 export default async function DashboardPage({ searchParams }) {
@@ -41,6 +42,12 @@ export default async function DashboardPage({ searchParams }) {
     .eq("profile_id", user.id)
     .order("scanned_at", { ascending: false })
     .limit(5);
+
+  const { data: documents } = await supabase
+    .from("documents")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: true });
 
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-10">
@@ -96,8 +103,22 @@ export default async function DashboardPage({ searchParams }) {
             {params.error}
           </p>
         )}
+        {params?.doc_success && (
+          <p className="mb-4 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            Documentos actualizados correctamente.
+          </p>
+        )}
+        {params?.doc_error && (
+          <p className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            {params.doc_error}
+          </p>
+        )}
 
         <ProfileEditor profile={profile} userId={user.id} />
+
+        <div className="mt-8 pt-8 border-t border-zinc-100">
+          <DocumentsEditor documents={documents || []} userId={user.id} />
+        </div>
       </div>
     </main>
   );
