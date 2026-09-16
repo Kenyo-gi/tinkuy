@@ -2,8 +2,9 @@ import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
 import { getPhoneCountryIso } from "@/lib/phone-flag";
-import { IconSaveContact, IconChat, IconPhone, IconMail, IconFile, SocialBadge } from "@/components/Icons";
+import { IconSaveContact, IconChat, IconPhone, IconMail, SocialBadge } from "@/components/Icons";
 import Logo from "@/components/Logo";
+import DocumentsButton from "@/components/DocumentsButton";
 
 const SOCIALS = [
   { key: "instagram_url", label: "Instagram", badge: "IG" },
@@ -36,6 +37,12 @@ export default async function PublicCardPage({ params, searchParams }) {
   } catch {
     // no bloquear la carga de la tarjeta si falla el registro del escaneo
   }
+
+  const { data: documents } = await supabase
+    .from("documents")
+    .select("*")
+    .eq("user_id", profile.id)
+    .order("created_at", { ascending: true });
 
   const whatsappLink = profile.whatsapp_phone ? `https://wa.me/${profile.whatsapp_phone.replace(/\D/g, "")}` : null;
   const phoneIso = getPhoneCountryIso(profile.phone);
@@ -76,9 +83,7 @@ export default async function PublicCardPage({ params, searchParams }) {
               <a href={`mailto:${profile.email}`} className="flex items-center justify-center gap-2 w-full bg-zinc-100 text-zinc-800 rounded-lg py-2.5 font-medium hover:bg-zinc-200 transition"><IconMail className={iconClass} />Enviar email</a>
             )}
 
-            {profile.resume_url && (
-              <a href={profile.resume_url} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 w-full bg-zinc-100 text-zinc-800 rounded-lg py-2.5 font-medium hover:bg-zinc-200 transition"><IconFile className={iconClass} />Ver curriculum</a>
-            )}
+            <DocumentsButton documents={documents} iconClass={iconClass} />
           </div>
 
           <div className="mt-6 flex justify-center gap-2 flex-wrap">
