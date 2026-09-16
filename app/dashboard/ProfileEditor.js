@@ -6,7 +6,6 @@ import { updateProfile } from "@/lib/actions/profile";
 import { COUNTRY_CODES, splitPhone } from "@/lib/country-codes";
 
 const MAX_IMAGE_MB = 5;
-const MAX_PDF_MB = 10;
 
 function Field({ label, name, defaultValue, placeholder, type = "text" }) {
   return (
@@ -29,9 +28,7 @@ export default function ProfileEditor({ profile, userId }) {
   const phoneSplit = splitPhone(profile?.phone);
   const whatsappSplit = splitPhone(profile?.whatsapp_phone);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
-  const [resumeUrl, setResumeUrl] = useState(profile?.resume_url || "");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [uploadingResume, setUploadingResume] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
   async function handleAvatarChange(e) {
@@ -68,43 +65,9 @@ export default function ProfileEditor({ profile, userId }) {
     setUploadingAvatar(false);
   }
 
-  async function handleResumeChange(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploadError("");
-
-    if (file.type !== "application/pdf") {
-      setUploadError("El curriculum debe ser un archivo PDF.");
-      return;
-    }
-    if (file.size > MAX_PDF_MB * 1024 * 1024) {
-      setUploadError(`El PDF no puede pesar mas de ${MAX_PDF_MB}MB.`);
-      return;
-    }
-
-    setUploadingResume(true);
-    const supabase = createClient();
-    const path = `${userId}/cv-${Date.now()}.pdf`;
-
-    const { error } = await supabase.storage
-      .from("resumes")
-      .upload(path, file, { upsert: true });
-
-    if (error) {
-      setUploadError("No se pudo subir el PDF: " + error.message);
-      setUploadingResume(false);
-      return;
-    }
-
-    const { data } = supabase.storage.from("resumes").getPublicUrl(path);
-    setResumeUrl(data.publicUrl);
-    setUploadingResume(false);
-  }
-
   return (
     <form action={updateProfile} className="space-y-8">
       <input type="hidden" name="avatar_url" value={avatarUrl} />
-      <input type="hidden" name="resume_url" value={resumeUrl} />
 
       {/* Foto */}
       <div>
@@ -188,25 +151,6 @@ export default function ProfileEditor({ profile, userId }) {
         <textarea name="bio" defaultValue={profile?.bio || ""} maxLength={160} rows={3} placeholder="Cuenta en pocas palabras a que te dedicas" className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black" />
       </div>
 
-      {/* Curriculum */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Curriculum profesional (PDF)
-        </label>
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={handleResumeChange}
-          className="text-sm"
-        />
-        {uploadingResume && (
-          <p className="text-xs text-gray-500 mt-1">Subiendo PDF...</p>
-        )}
-        {resumeUrl && (
-          <a href={resumeUrl} target="_blank" rel="noreferrer" className="block mt-1 text-xs text-blue-600 underline">Ver curriculum actual</a>
-        )}
-      </div>
-
       {/* Redes sociales */}
       <div>
         <h2 className="text-sm font-semibold text-gray-800 mb-3">
@@ -252,7 +196,7 @@ export default function ProfileEditor({ profile, userId }) {
         </p>
       )}
 
-      <button type="submit" disabled={uploadingAvatar || uploadingResume} className="bg-blue-600 text-white rounded-lg px-5 py-2 font-semibold hover:bg-blue-700 transition disabled:opacity-50">Guardar cambios</button>
+      <button type="submit" disabled={uploadingAvatar} className="bg-blue-600 text-white rounded-lg px-5 py-2 font-semibold hover:bg-blue-700 transition disabled:opacity-50">Guardar cambios</button>
     </form>
   );
 }
